@@ -1,37 +1,27 @@
 * {
     font-family: sans-serif;
-    font-weight: bold;
+    font-weight: 900;
     text-align:center;
-}
-
-body {
-    background-color:#d3d3d3(--bs-body-color);
 }
 
 header {
     background-color:#444;
     padding: 20px;
-    height: 20%;
     color:white;
 }
 
 nav {
     background-color:#d3d3d3;
-    width:30%;
     float:left;
     padding: 50px 10px;
-    height: 100%;
     text-transform: uppercase;
-    min-height: 600px;
 }
 
 main {
-    width:70%;
     float:left;
     background-color:#d3d3d3;
     padding: 50px 30px;
-    min-height: 600px;
-    align-content:center;
+    min-height:700px;
     text-transform: uppercase;
 }
 
@@ -39,7 +29,6 @@ footer {
     clear:both;
     background-color:#444;
     padding: 20px;
-    height: 20%;
     color:white;
 }
 
