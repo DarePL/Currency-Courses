@@ -1,43 +1,48 @@
 * {
     font-family: sans-serif;
     font-weight: 900;
-    text-align:center;
+    text-align: center;
 }
 
 header {
-    background-color:#444;
+    background-color: #444;
     padding: 20px;
-    color:white;
+    color: white;
 }
 
 nav {
-    background-color:#d3d3d3;
-    float:left;
+    background-color: #d3d3d3;
+    float: left;
     padding: 50px 10px;
     text-transform: uppercase;
+    width: 30%;
+    min-height: 700px;
 }
 
 main {
-    float:left;
-    background-color:#d3d3d3;
+    float: left;
+    background-color: #d3d3d3;
     padding: 50px 30px;
-    min-height:700px;
+    min-height: 700px;
     text-transform: uppercase;
+    width: 70%;
 }
 
 footer {
-    clear:both;
-    background-color:#444;
+    clear: both;
+    background-color: #444;
     padding: 20px;
-    color:white;
+    color: white;
 }
 
-table, th, td {
-    text-transform:uppercase;
-    margin-top:30px;
+table,
+th,
+td {
+    text-transform: uppercase;
+    margin-top: 30px;
     min-width: 300px;
-    font-size:25px;
-    padding:5px;
+    font-size: 20px;
+    padding: 5px;
 }
 
 .buy {
@@ -45,5 +50,5 @@ table, th, td {
 }
 
 .sell {
-    color:red;
+    color: red;
 }
