@@ -1,7 +1,7 @@
 * {
     font-family: sans-serif;
     font-weight: 900;
-    text-align: center;
+    /* text-align: center; */
 }
 
 header {
@@ -17,6 +17,7 @@ nav {
     text-transform: uppercase;
     width: 30%;
     min-height: 700px;
+    text-align: center;
 }
 
 main {
@@ -24,8 +25,11 @@ main {
     background-color: #d3d3d3;
     padding: 50px 30px;
     min-height: 700px;
-    text-transform: uppercase;
     width: 70%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
 }
 
 footer {
@@ -51,4 +55,87 @@ td {
 
 .sell {
     color: red;
+}
+
+DIV.top-bar {
+    padding: 15px;
+    text-align: left;
+    background-color: #000000;
+
+}
+
+DIV.top-bar a:link,
+a:visited {
+    text-decoration: none;
+    display: inline;
+    border: 1px black solid;
+    padding: 5px 10px;
+    background-color: #d3d3d3;
+    color: black;
+    font-weight: 900;
+    border-radius: 10px;
+
+}
+
+DIV.top-bar a:hover,
+a:active {
+    background-color: #444;
+    color: rgb(255, 255, 255);
+
+}
+
+DIV.top-bar ul,
+DIV.top-bar li {
+    display: inline;
+    margin-right: 1em;
+
+}
+
+#formularz {
+    background-color: #444;
+    padding: 20px;
+    color: white;
+    /* line-height: 1.5; */
+    width: 500px;
+    border-radius: 10px;
+    /* display: inline-block; */
+    /* flex-direction: column; */
+    /* gap: 7px; */
+    /* justify-content: flex-end; */
+    text-align: right;
+}
+
+input[type="text"],
+[type="number"] {
+    width: 200px;
+    background-color: #d3d3d3;
+    color: black;
+    border-radius: 5px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* pole odczytania API */
+#selectedCurrency {
+    min-width: 200px;
+    height: 30px;
+    background-color: #d3d3d3;
+    display: inline-block;
+    color: black;
+    box-shadow: inset 2px 2px rgb(156, 156, 156), inset -2px -2px rgb(233, 233, 233);
+    border-radius: 5px;
+    text-align: center;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.dropdown-menu {
+    cursor: pointer;
+}
+
+#formularz button {
+    /* justify-self: center; */
+    /* margin-right: auto;
+    margin-left: auto;
+    text-align: center; */
 }
