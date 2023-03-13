@@ -1,4 +1,6 @@
 let askCurrency, bidCurrency, apiCurrency, effectiveDateCurrency, comment, apiCode;
+let tablicaId = [];
+
 //ustawia aktualną datę
 var date = new Date();
 if (date.getMonth() + 1 < 10) {
@@ -8,7 +10,7 @@ else {
     dataDodania = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 }
 
-// console.log(dataDodania);
+// pobiera zapytanie z API
 function query(currency) {
     $("#currencyTable").html('');
     $("#addCurrencyToBackend").html('');
@@ -23,7 +25,7 @@ function query(currency) {
     });
 }
 
-
+//wyświetla zapytanie z API
 function displayCurrency(api) {
 
     $("#currencyTable").append(
@@ -48,12 +50,8 @@ function displayCurrency(api) {
             '<br><h5><button class="btn btn-secondary" onclick="addToBackend()">Dodaj walutę do Backendu</button></h5>'
         );
     }
-    //  konsola();
 }
 
-function konsola() {
-    console.log(apiCurrency + " " + askCurrency + " " + bidCurrency + " " + effectiveDateCurrency + " " + apiCode);
-}
 //Dodawanie do backendu kursów z API NBP
 function addToBackend() {
     let url = "http://localhost:8080/currencyRates"
@@ -80,23 +78,23 @@ function addToBackend() {
 }
 //wybór waluty by dodać do backendu ręcznie
 function selectCurrency(currency) {
-    $("#selectedCurrency").html('');
-    $("#selectedCurrency").append(currency);
-    $("#dataKursu").html('');
-    $("#dataKursu").append('Data kursu: <input type="text" value="2023-03-12" id="courseDate">');
-    $("#courseDate").append(dataDodania);
     askCurrency = 0;
     bidCurrency = 0;
     comment = "Przykładowy komentarz";
     effectiveDateCurrency = dataDodania;
     apiCode = currency;
+    $("#selectedCurrency").html('');
+    $("#selectedCurrency").append(currency);
+    $("#dataKursu").html('');
+    $("#dataKursu").append('Data kursu: <input type="text" value="' + effectiveDateCurrency + '" id="courseDate">');
 }
+
 //Dodawanie ręczne do backendu
 function handAddToBackend() {
     bidCurrency = document.getElementById("kupno").value;
     askCurrency = document.getElementById("sprzedaz").value;
     comment = document.getElementById("komentarz").value;
-    console.log("Waluta: " + apiCode + ", Cena kupna: " + bidCurrency + ", Cena sprzedaży: " + askCurrency + ", Komentarz: " + '"' + comment + '"' + ", Data kursu: " + dataDodania);
+    effectiveDateCurrency = document.getElementById("courseDate").value;
     if (apiCode == undefined) {
         $('#addCurrencyToBackend').html('');
         $('#addCurrencyToBackend').append('<br><span style="color:red">Wystąpił błąd: wybierz walutę po lewej</span>');
@@ -124,7 +122,7 @@ function handAddToBackend() {
                 "ask": askCurrency,
                 "bid": bidCurrency,
                 "comment": comment,
-                "createdDate": dataDodania,
+                "createdDate": effectiveDateCurrency,
                 "currency": apiCode
 
             }),
@@ -138,3 +136,62 @@ function handAddToBackend() {
         $('#addCurrencyToBackend').append('<br><span style="color:green">Dodano pomyślnie</span>');
     }
 }
+
+//zaczytuje całą tabelę
+function queryCurrencyTable() {
+    $("#formularzTablica").html('');
+    let url = "http://localhost:8080/currencyRates";
+    $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: url,
+        success: function (data) {
+            showCurrencyTable(data)
+        }
+    });
+}
+
+//wyświetla całą tabelę
+function showCurrencyTable(table) {
+    tablicaId = [];
+    for (let i = 0; i < table.length; i++) {
+        tablicaId.push(table[i].id);
+        $("#formularzTablica").append(
+            '<section id="showCurrencyTable">' +
+            '<button type="submit" id="deleteButton" onclick="deleteConfirm(' + i + ')">x</button>' +
+            '<div>Waluta: <input type="text" id="nameCurrency" value="' + table[i].name + '"></div><br>' +
+            '<div>ID: <input type="text" id="id" value="' + table[i].id + '"></div><br>' +
+            '<div>Cena kupna: <input type="number" id="kupno" step="0.000001" value="' + table[i].bid + '"></div><br>' +
+            '<div>Cena sprzedaży: <input type="number" id="sprzedaz" step="0.000001" value="' + table[i].ask + '"></div><br>' +
+            '<div>Data utworzenia: <input type="text" value="' + table[i].createdDate + '"></div><br>' +
+            '<div>Komentarz: <input type="text" id="komentarz" value="' + table[i].comment + '"></div>' +
+            '</section><br>'
+        );
+    }
+}
+
+//zapytanie czy usunąć pozycję
+function deleteConfirm(deleteId) {
+    if (confirm("Czy na pewno usunąć pozycję?")) {
+        deleteCurrency(deleteId);
+    } else {
+        alert("Zrezygnowano z usunięcia pozycji");
+    }
+}
+
+//Usuwanie pozycji po ID
+function deleteCurrency(deleteId) {
+    let deleteLink = tablicaId[deleteId];
+    let url = "http://localhost:8080/currencyRates/" + deleteLink;
+    $.ajax({
+        type: "DELETE",
+        dataType: 'json',
+        contentType: "application/json",
+        data: JSON.stringify({
+            "id": deleteLink
+        }),
+        url: url,
+    })
+    queryCurrencyTable();
+}
+

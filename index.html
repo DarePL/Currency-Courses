@@ -25,7 +25,7 @@
     <header class="text-center">
         <h1>Kursy walut wg Narodowego Banku Polskiego</h1>
     </header>
-    <section>
+    <section id="script">
         <nav>
             <h3>Sprawdź kurs waluty z NBP:</h3><br>
             <div class="dropdown">
@@ -52,11 +52,13 @@
         </nav>
         <main>
             <h2>Kurs wybranej waluty:</h2>
-            <table id="currencyTable" align="center">
-                <tr>
-                    <td><i>Wybierz jakąś walutę z lewej strony</i></td>
-                </tr>
-            </table>
+            <section id="formularz" style="width:700px;">
+                <table id="currencyTable" align="center">
+                    <tr>
+                        <td><i>Wybierz jakąś walutę z lewej strony</i></td>
+                    </tr>
+                </table>
+            </section>
             <span id="addCurrencyToBackend"></span>
         </main>
     </section>
@@ -70,4 +72,5 @@
         integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
         crossorigin="anonymous"></script>
 </body>
+
 </html>

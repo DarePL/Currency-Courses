@@ -25,7 +25,7 @@
     <header class="text-center">
         <h1>Kursy walut wg Narodowego Banku Polskiego</h1>
     </header>
-    <section>
+    <section id="script">
         <nav>
             <!-- <h3>Sprawdź kurs waluty z NBP:</h3><br>
             <div class="dropdown">
@@ -49,15 +49,17 @@
                     <li><a class="dropdown-item" onclick="query('xdr')">XDR</a></li>
                 </ul>
             </div> -->
+            <input type="button" value="Pokaż wszystkie" onclick="queryCurrencyTable()">
         </nav>
         <main>
-            <!-- <h2>Kurs wybranej waluty:</h2>
-            <table id="currencyTable" align="center">
-                <tr>
-                    <td><i>Wybierz jakąś walutę z lewej strony</i></td>
-                </tr>
-            </table>
-            <span id="addCurrencyToBackend"></span> -->
+            <h2>Lista zapisanych kursów:</h2>
+
+            <section id="formularzTablica">
+
+                <i>Wybierz parametry po lewej i wciśnij przycisk "Pokaż"</i>
+
+            </section>
+            <span id="addCurrencyToBackend"></span>
         </main>
     </section>
     <footer>
