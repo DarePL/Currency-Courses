@@ -1,4 +1,5 @@
-let askCurrency, bidCurrency, apiCurrency, effectiveDateCurrency, comment, apiCode;
+let askCurrency, bidCurrency, apiCurrency, effectiveDateCurrency, comment, apiCode, deleteLink, currencyFilter, id;
+let dateFrom, dateTo;
 let tablicaId = [];
 
 //ustawia aktualną datę
@@ -70,7 +71,7 @@ function addToBackend() {
         }),
         url: url,
         success: function (data) {
-            //  console.log('data', data);
+            console.log('data', data);
             console.log('Dodano');
         }
     });
@@ -137,16 +138,59 @@ function handAddToBackend() {
     }
 }
 
+//wybór waluty do wyświetlenia
+function selectCurrencyToFilter(currency) {
+    apiCode = currency;
+    console.log(apiCode);
+}
+
+//wybór daty "od"
+function selectDateFrom() {
+    dateFrom = document.getElementById("dateFrom").value;
+}
+//wybór daty "do"
+function selectDateTo() {
+    dateTo = document.getElementById("dateTo").value;
+}
+
 //zaczytuje całą tabelę
 function queryCurrencyTable() {
+    let url;
     $("#formularzTablica").html('');
-    let url = "http://localhost:8080/currencyRates";
+    if (apiCode == undefined) {
+        if (dateFrom == undefined && dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates/";
+        }
+        else if (dateFrom == undefined) {
+            url = "http://localhost:8080/currencyRates?createdTo=" + dateTo;
+        }
+        else if (dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom;
+        }
+        else {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom + "&createdTo=" + dateTo;
+        }
+    }
+    else {
+        if (dateFrom == undefined && dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates?currency=" + apiCode;
+        }
+        else if (dateFrom == undefined) {
+            url = "http://localhost:8080/currencyRates?createdTo=" + dateTo + "&currency=" + apiCode;
+        }
+        else if (dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom + "&currency=" + apiCode;
+        }
+        else {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom + "&createdTo=" + dateTo + "&currency=" + apiCode;
+        }
+    }
     $.ajax({
         type: 'GET',
         dataType: 'json',
         url: url,
         success: function (data) {
-            showCurrencyTable(data)
+            showCurrencyTable(data);
         }
     });
 }
@@ -158,21 +202,118 @@ function showCurrencyTable(table) {
         tablicaId.push(table[i].id);
         $("#formularzTablica").append(
             '<section id="showCurrencyTable">' +
-            '<button type="submit" id="deleteButton" onclick="deleteConfirm(' + i + ')">x</button>' +
+            // '<button type="submit" id="deleteButton" onclick="deleteConfirm(' + i + ')">x</button>' +
             '<div>Waluta: <input type="text" id="nameCurrency" value="' + table[i].name + '"></div><br>' +
             '<div>ID: <input type="text" id="id" value="' + table[i].id + '"></div><br>' +
             '<div>Cena kupna: <input type="number" id="kupno" step="0.000001" value="' + table[i].bid + '"></div><br>' +
             '<div>Cena sprzedaży: <input type="number" id="sprzedaz" step="0.000001" value="' + table[i].ask + '"></div><br>' +
-            '<div>Data utworzenia: <input type="text" value="' + table[i].createdDate + '"></div><br>' +
+            '<div>Data utworzenia: <input id="dataUtworzenia" type="text" value="' + table[i].createdDate + '"></div><br>' +
             '<div>Komentarz: <input type="text" id="komentarz" value="' + table[i].comment + '"></div>' +
             '</section><br>'
         );
     }
 }
 
+//zaczytuje tabelę do edycji pozycji
+function queryCurrencyTableToEdit() {
+    let url;
+    $("#formularzTablica").html('');
+    if (apiCode == undefined) {
+        if (dateFrom == undefined && dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates/";
+        }
+        else if (dateFrom == undefined) {
+            url = "http://localhost:8080/currencyRates?createdTo=" + dateTo;
+        }
+        else if (dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom;
+        }
+        else {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom + "&createdTo=" + dateTo;
+        }
+    }
+    else {
+        if (dateFrom == undefined && dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates?currency=" + apiCode;
+        }
+        else if (dateFrom == undefined) {
+            url = "http://localhost:8080/currencyRates?createdTo=" + dateTo + "&currency=" + apiCode;
+        }
+        else if (dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom + "&currency=" + apiCode;
+        }
+        else {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom + "&createdTo=" + dateTo + "&currency=" + apiCode;
+        }
+    }
+    $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: url,
+        success: function (data) {
+            showCurrencyTableToEdit(data);
+        }
+    });
+}
+
+//wyświetla tablice do edycji pozycji
+function showCurrencyTableToEdit(table) {
+    tablicaId = [];
+    for (let i = 0; i < table.length; i++) {
+        tablicaId.push(table[i].id);
+        $("#formularzTablica").append(
+            '<section id="showCurrencyTable">' +
+            '<button type="submit" id="deleteButton" onclick="deleteConfirm(' + i + ')">x</button>' +
+            '<div>Waluta: <input type="text" id="nameCurrency" value="' + table[i].name + '"></div><br>' +
+            '<div>API CODE: <input type="text" id="apiCode" value="' + table[i].currency + '"></div><br>' +
+            '<div>ID: <input type="text" id="id" value="' + table[i].id + '"></div><br>' +
+            '<div>Cena kupna: <input type="number" id="kupno" step="0.000001" value="' + table[i].bid + '"></div><br>' +
+            '<div>Cena sprzedaży: <input type="number" id="sprzedaz" step="0.000001" value="' + table[i].ask + '"></div><br>' +
+            '<div>Data utworzenia: <input type="text" id="dataUtworzenia" value="' + table[i].createdDate + '"></div><br>' +
+            '<div>Komentarz: <input type="text" id="komentarz" value="' + table[i].comment + '"></div><br>' +
+            '<button type="submit" id="putCurrency" onclick="putToBackend()">Zapisz zmiany</button>' +
+            '</section><br>'
+        );
+    }
+}
+
+// zapisuje zmiany w pozycji
+function putToBackend() {
+    bidCurrency = document.getElementById("kupno").value;
+    askCurrency = document.getElementById("sprzedaz").value;
+    comment = document.getElementById("komentarz").value;
+    effectiveDateCurrency = document.getElementById("dataUtworzenia").value;
+    apiCode = document.getElementById("apiCode").value;
+    id = document.getElementById("id").value;
+    console.log(askCurrency + " " + bidCurrency + " " + comment + " " + effectiveDateCurrency + " " + apiCode + " " + id);
+    let url = "http://localhost:8080/currencyRates/" + id;
+    $.ajax({
+        type: "PUT",
+        dataType: 'json',
+        contentType: "application/json",
+        data: JSON.stringify({
+
+            "ask": askCurrency,
+            "bid": bidCurrency,
+            "comment": comment,
+            "createdDate": effectiveDateCurrency,
+            "currency": apiCode,
+            "id": id
+
+        }),
+        url: url,
+        success: function (data) {
+            //  console.log('data', data);
+            console.log('Dodano');
+        }
+    });
+    $('#addCurrencyToBackend').html('');
+    $('#addCurrencyToBackend').append('<br><span style="color:green">Dodano pomyślnie</span>');
+}
+
 //zapytanie czy usunąć pozycję
 function deleteConfirm(deleteId) {
-    if (confirm("Czy na pewno usunąć pozycję?")) {
+    if (confirm('Czy na pewno usunąć pozycję?<input type="text" value="TEST">')) {
         deleteCurrency(deleteId);
     } else {
         alert("Zrezygnowano z usunięcia pozycji");
@@ -181,7 +322,7 @@ function deleteConfirm(deleteId) {
 
 //Usuwanie pozycji po ID
 function deleteCurrency(deleteId) {
-    let deleteLink = tablicaId[deleteId];
+    deleteLink = tablicaId[deleteId];
     let url = "http://localhost:8080/currencyRates/" + deleteLink;
     $.ajax({
         type: "DELETE",
@@ -191,6 +332,10 @@ function deleteCurrency(deleteId) {
             "id": deleteLink
         }),
         url: url,
+        // success: function (data) {
+        //     queryCurrencyTable();
+        //     console.log("usunieto");
+        // }
     })
     queryCurrencyTable();
 }
