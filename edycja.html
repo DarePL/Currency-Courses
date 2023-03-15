@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Kurs walut NBP</title>
+  <link rel="Shortcut icon" href="img/ico.png">
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+  <script src="script/script.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="top-bar">
+    <ul>
+      <li><a href="index.html">Strona główna</a></li>
+      <li><a href="dodawanie.html">Dodawanie ręczne</a></li>
+      <li><a href="tablica.html">Wyświetl tablicę backend</a></li>
+      <li><a href="edycja.html">Edycja tabeli</a></li>
+    </ul>
+
+  </div>
+  <header class="text-center">
+    <h1>Kursy walut wg Narodowego Banku Polskiego</h1>
+  </header>
+  <section id="script">
+    <nav>
+      <h3>Sortuj po walucie</h3><br>
+
+      Wybierz walutę
+
+      <select class="dropdown">
+        <option class="dropdown-item" onclick="selectCurrencyToFilter()">Wybierz wszystkie</option>
+
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('USD')">Dolar Amerykański (USD)</option>
+
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('AUD')">Dolar australijski(AUD)</option>
+
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('CAD')">Dolar kanadyjski (CAD)</option>
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('EUR')">Euro (EUR)</option>
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('HUF')">Forint - Węgry (HUF)</option>
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('HUF')">Frank szwajcarski (CHF)</option>
+
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('GBP')">Funt Szterling (GBP)</option>
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('JPY')">Jen - Japonia (JPY)</option>
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('CZK')">Korona czeska (CZK)</option>
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('DKK')">Korona duńska (DKK)</option>
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('NOK')">Korona norweska (NOK)</option>
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('UAH')">Hrywna ukraińska (UAH)</option>
+        <option class="dropdown-item" onclick="selectCurrencyToFilter('CNY')">Juan chiński (CNY)</option>
+      </select>
+      <br>
+
+      <!-- <div class="dropdown">
+        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          Wybierz walutę
+        </a>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter()">Wybierz wszystkie</a>
+          </li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('USD')">Dolar Amerykański (USD)</a>
+          </li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('AUD')">Dolar australijski(AUD)</a>
+          </li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('CAD')">Dolar kanadyjski (CAD)</a></li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('EUR')">Euro (EUR)</a></li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('HUF')">Forint - Węgry (HUF)</a></li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('HUF')">Frank szwajcarski (CHF)</a>
+          </li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('GBP')">Funt Szterling (GBP)</a></li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('JPY')">Jen - Japonia (JPY)</a></li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('CZK')">Korona czeska (CZK)</a></li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('DKK')">Korona duńska (DKK)</a></li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('NOK')">Korona norweska (NOK)</a></li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('UAH')">Hrywna ukraińska (UAH)</a></li>
+          <li><a class="dropdown-item" onclick="selectCurrencyToFilter('CNY')">Juan chiński (CNY)</a></li>
+        </ul>
+      </div><br> -->
+      <h3>Sortuj po dacie</h3><br>
+      <form>
+        data od: <input type="date" id="dateFrom" onchange="selectDateFrom()"><br><br>
+
+        data do: <input type="date" id="dateTo" onchange="selectDateTo()"><br><br>
+        <input type="reset" value="Czyść daty"><br><br>
+        <input type="button" value="Pokaż" onclick="queryCurrencyTableToEdit()">
+      </form>
+    </nav>
+    <main>
+      <h2>Lista zapisanych kursów:</h2>
+
+      <section id="formularzTablica">
+
+        <i>Wybierz parametry po lewej i wciśnij przycisk "Pokaż"</i>
+
+      </section>
+      <span id="addCurrencyToBackend"></span>
+    </main>
+  </section>
+  <footer>
+    Stronę stworzył: Damian Szymczyk
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+    integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
