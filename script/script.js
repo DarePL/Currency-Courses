@@ -1,6 +1,9 @@
-let askCurrency, bidCurrency, apiCurrency, effectiveDateCurrency, comment, apiCode, deleteLink, currencyFilter, id;
+let askCurrency, bidCurrency, apiCurrency, effectiveDateCurrency, comment, deleteLink, changeLink, currencyFilter, id;
+let apiCode = undefined;
 let dateFrom, dateTo;
 let tablicaId = [];
+
+// console.log(apiCode);
 
 //ustawia aktualną datę
 var date = new Date();
@@ -141,7 +144,9 @@ function handAddToBackend() {
 //wybór waluty do wyświetlenia
 function selectCurrencyToFilter(currency) {
     apiCode = currency;
-    console.log(apiCode);
+    // $("#test").empty();
+    // $("#test").append("<br>" + apiCode);
+    // console.log(apiCode);
 }
 
 //wybór daty "od"
@@ -202,7 +207,6 @@ function showCurrencyTable(table) {
         tablicaId.push(table[i].id);
         $("#formularzTablica").append(
             '<section id="showCurrencyTable">' +
-            // '<button type="submit" id="deleteButton" onclick="deleteConfirm(' + i + ')">x</button>' +
             '<div>Waluta: <input type="text" id="nameCurrency" value="' + table[i].name + '"></div><br>' +
             '<div>ID: <input type="text" id="id" value="' + table[i].id + '"></div><br>' +
             '<div>Cena kupna: <input type="number" id="kupno" step="0.000001" value="' + table[i].bid + '"></div><br>' +
@@ -264,28 +268,28 @@ function showCurrencyTableToEdit(table) {
         $("#formularzTablica").append(
             '<section id="showCurrencyTable">' +
             '<button type="submit" id="deleteButton" onclick="deleteConfirm(' + i + ')">x</button>' +
-            '<div>Waluta: <input type="text" id="nameCurrency" value="' + table[i].name + '"></div><br>' +
-            '<div>API CODE: <input type="text" id="apiCode" value="' + table[i].currency + '"></div><br>' +
-            '<div>ID: <input type="text" id="id" value="' + table[i].id + '"></div><br>' +
-            '<div>Cena kupna: <input type="number" id="kupno" step="0.000001" value="' + table[i].bid + '"></div><br>' +
-            '<div>Cena sprzedaży: <input type="number" id="sprzedaz" step="0.000001" value="' + table[i].ask + '"></div><br>' +
-            '<div>Data utworzenia: <input type="text" id="dataUtworzenia" value="' + table[i].createdDate + '"></div><br>' +
-            '<div>Komentarz: <input type="text" id="komentarz" value="' + table[i].comment + '"></div><br>' +
-            '<button type="submit" id="putCurrency" onclick="putToBackend()">Zapisz zmiany</button>' +
+            '<div>Waluta: <input type="text" id="nameCurrency' + i + '" value="' + table[i].name + '"></div><br>' +
+            '<div>API CODE: <input type="text" id="apiCode' + i + '" value="' + table[i].currency + '"></div><br>' +
+            '<div>ID: <input type="text" id="id' + i + '" value="' + table[i].id + '"></div><br>' +
+            '<div>Cena kupna: <input type="number" id="kupno' + i + '" step="0.000001" value="' + table[i].bid + '"></div><br>' +
+            '<div>Cena sprzedaży: <input type="number" id="sprzedaz' + i + '" step="0.000001" value="' + table[i].ask + '"></div><br>' +
+            '<div>Data utworzenia: <input type="text" id="dataUtworzenia' + i + '" value="' + table[i].createdDate + '"></div><br>' +
+            '<div>Komentarz: <input type="text" id="komentarz' + i + '" value="' + table[i].comment + '"></div><br>' +
+            '<button type="submit" id="putCurrency" onclick="putToBackend(' + i + ')">Zapisz zmiany</button>' +
             '</section><br>'
         );
     }
 }
 
 // zapisuje zmiany w pozycji
-function putToBackend() {
-    bidCurrency = document.getElementById("kupno").value;
-    askCurrency = document.getElementById("sprzedaz").value;
-    comment = document.getElementById("komentarz").value;
-    effectiveDateCurrency = document.getElementById("dataUtworzenia").value;
-    apiCode = document.getElementById("apiCode").value;
-    id = document.getElementById("id").value;
-    console.log(askCurrency + " " + bidCurrency + " " + comment + " " + effectiveDateCurrency + " " + apiCode + " " + id);
+function putToBackend(poz) {
+    bidCurrency = document.getElementById("kupno" + poz).value;
+    askCurrency = document.getElementById("sprzedaz" + poz).value;
+    comment = document.getElementById("komentarz" + poz).value;
+    effectiveDateCurrency = document.getElementById("dataUtworzenia" + poz).value;
+    apiCode = document.getElementById("apiCode" + poz).value;
+    id = document.getElementById("id" + poz).value;
+    // console.log(askCurrency + " " + bidCurrency + " " + comment + " " + effectiveDateCurrency + " " + apiCode + " " + id);
     let url = "http://localhost:8080/currencyRates/" + id;
     $.ajax({
         type: "PUT",
@@ -304,16 +308,17 @@ function putToBackend() {
         url: url,
         success: function (data) {
             //  console.log('data', data);
-            console.log('Dodano');
+            alert("data", data);
         }
     });
-    $('#addCurrencyToBackend').html('');
-    $('#addCurrencyToBackend').append('<br><span style="color:green">Dodano pomyślnie</span>');
+    // apiCode = document.selectCurrencyToFilter.value;
+    alert("Pozycję zmieniono");
 }
 
 //zapytanie czy usunąć pozycję
 function deleteConfirm(deleteId) {
-    if (confirm('Czy na pewno usunąć pozycję?<input type="text" value="TEST">')) {
+    if (confirm('Czy na pewno usunąć pozycję?')) {
+        alert("Pozycję usunięto");
         deleteCurrency(deleteId);
     } else {
         alert("Zrezygnowano z usunięcia pozycji");
@@ -332,11 +337,11 @@ function deleteCurrency(deleteId) {
             "id": deleteLink
         }),
         url: url,
-        // success: function (data) {
-        //     queryCurrencyTable();
-        //     console.log("usunieto");
-        // }
+        success: function (data) {
+            //     queryCurrencyTable();
+            alert(data);
+        }
     })
-    queryCurrencyTable();
+    queryCurrencyTableToEdit();
 }
 
