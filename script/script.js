@@ -3,8 +3,6 @@ let apiCode = undefined;
 let dateFrom, dateTo;
 let tablicaId = [];
 
-// console.log(apiCode);
-
 //ustawia aktualną datę
 var date = new Date();
 if (date.getMonth() + 1 < 10) {
@@ -144,9 +142,6 @@ function handAddToBackend() {
 //wybór waluty do wyświetlenia
 function selectCurrencyToFilter(currency) {
     apiCode = currency;
-    // $("#test").empty();
-    // $("#test").append("<br>" + apiCode);
-    // console.log(apiCode);
 }
 
 //wybór daty "od"
@@ -311,7 +306,6 @@ function putToBackend(poz) {
             alert("data", data);
         }
     });
-    // apiCode = document.selectCurrencyToFilter.value;
     alert("Pozycję zmieniono");
 }
 
