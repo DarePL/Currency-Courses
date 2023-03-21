@@ -1,7 +1,9 @@
-let askCurrency, bidCurrency, apiCurrency, effectiveDateCurrency, comment, deleteLink, changeLink, currencyFilter, id;
+let askCurrency, bidCurrency, apiCurrency, effectiveDateCurrency, comment, deleteLink, changeLink, currencyFilter, id, jsonDoSortowania, jsonPosortowany;
 let apiCode = undefined;
 let dateFrom, dateTo;
-let tablicaId = [];
+let tablicaId, tablicaAsk, tablicaBid, tablicaDate, tablicaCurrencyQuantity = [];
+const tablicaCurrency = [];
+
 
 //ustawia aktualną datę
 var date = new Date();
@@ -21,6 +23,7 @@ function query(currency) {
         type: 'GET',
         dataType: 'json',
         url: url,
+        cache: false,
         success: function (data) {
             displayCurrency(data)
         }
@@ -71,6 +74,7 @@ function addToBackend() {
 
         }),
         url: url,
+        cache: false,
         success: function (data) {
             console.log('data', data);
             console.log('Dodano');
@@ -129,6 +133,7 @@ function handAddToBackend() {
 
             }),
             url: url,
+            cache: false,
             success: function (data) {
                 //  console.log('data', data);
                 console.log('Dodano');
@@ -189,6 +194,7 @@ function queryCurrencyTable() {
         type: 'GET',
         dataType: 'json',
         url: url,
+        cache: false,
         success: function (data) {
             showCurrencyTable(data);
         }
@@ -249,6 +255,7 @@ function queryCurrencyTableToEdit() {
         type: 'GET',
         dataType: 'json',
         url: url,
+        cache: false,
         success: function (data) {
             showCurrencyTableToEdit(data);
         }
@@ -259,6 +266,7 @@ function queryCurrencyTableToEdit() {
 function showCurrencyTableToEdit(table) {
     tablicaId = [];
     for (let i = 0; i < table.length; i++) {
+        console.log(table[i].name);
         tablicaId.push(table[i].id);
         $("#formularzTablica").append(
             '<section id="showCurrencyTable">' +
@@ -301,6 +309,7 @@ function putToBackend(poz) {
 
         }),
         url: url,
+        cache: false,
         success: function (data) {
             //  console.log('data', data);
             alert("data", data);
@@ -331,6 +340,7 @@ function deleteCurrency(deleteId) {
             "id": deleteLink
         }),
         url: url,
+        cache: false,
         success: function (data) {
             //     queryCurrencyTable();
             alert(data);
@@ -339,3 +349,187 @@ function deleteCurrency(deleteId) {
     queryCurrencyTableToEdit();
 }
 
+
+//wybiera waluty do wykresu
+function queryCurrencyTableToChart() {
+
+    let url;
+    // $("#formularzTablica").html('');
+    if (apiCode == undefined) {
+        if (dateFrom == undefined && dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates/";
+        }
+        else if (dateFrom == undefined) {
+            url = "http://localhost:8080/currencyRates?createdTo=" + dateTo;
+        }
+        else if (dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom;
+        }
+        else {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom + "&createdTo=" + dateTo;
+        }
+        showChartAllCurrency(url);
+    }
+    else {
+        if (dateFrom == undefined && dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates?currency=" + apiCode;
+        }
+        else if (dateFrom == undefined) {
+            url = "http://localhost:8080/currencyRates?createdTo=" + dateTo + "&currency=" + apiCode;
+        }
+        else if (dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom + "&currency=" + apiCode;
+        }
+        else {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom + "&createdTo=" + dateTo + "&currency=" + apiCode;
+        }
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            cache: false,
+            success: function (data) {
+
+                // funkcja sortowania po dacie
+                jsonDoSortowania = data;
+                jsonPosortowany = jsonDoSortowania.sort(function (a, b) {
+                    if (a.createdDate > b.createdDate) {
+                        return 1;
+                    }
+                    if (a.createdDate < b.createdDate) {
+                        return -1;
+                    }
+
+                    return 0;
+                });
+
+                showCurrencyChart(data);
+            },
+
+        });
+    }
+}
+
+
+//rysowanie wykresu liniowego
+function showCurrencyChart(table) {
+    // console.log(table.length);
+    if (table.length == 0) {
+        $('#doCzyszczeniaCanvas').html('').append('<h3 style="color:red">Baza danych jest pusta</h3>')
+    }
+    else {
+        $('#waluta-wykres').html('').append(table[0].name);
+        $('#doCzyszczeniaCanvas').html('').append('<canvas id="myChart" width="900px"></canvas>');
+
+        tablicaAsk = [];
+        for (let i = 0; i < table.length; i++) {
+            tablicaAsk.push(table[i].ask);
+        }
+        tablicaBid = [];
+        for (let i = 0; i < table.length; i++) {
+            tablicaBid.push(table[i].bid);
+        }
+        tablicaDate = [];
+        for (let i = 0; i < table.length; i++) {
+            tablicaDate.push(table[i].createdDate);
+        }
+
+        const ctx = document.getElementById('myChart');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: tablicaDate,
+                datasets: [{
+                    label: 'cena sprzedaży',
+                    data: tablicaAsk,
+                    borderWidth: 1,
+                    borderColor: '#ff0000',
+                    backgroundColor: '#ff0000'
+                },
+                {
+                    label: 'cena kupna',
+                    data: tablicaBid,
+                    borderWidth: 1,
+                    borderColor: '#00FF00',
+                    backgroundColor: '#00FF00'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    }
+}
+
+//rysowanie wykresu kołowego
+function showChartAllCurrency() {
+    let tablicaCurrency = ['USD', 'AUD', 'CAD', 'EUR', 'HUF', 'CHF', 'GBP', 'JPY', 'CZK', 'DKK', 'NOK', 'UAH', 'CNY'];
+    tablicaCurrencyQuantity = [];
+    let url;
+
+    $('#waluta-wykres').html('').append("Liczba kursów w bazie danych");
+    $('#doCzyszczeniaCanvas').html('').append('<canvas id="myChart" width="500px"></canvas>');
+
+    // wypełnienie tablicy
+    for (let i = 0; i < tablicaCurrency.length; i++) {
+        if (dateFrom == undefined && dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates?currency=" + tablicaCurrency[i];
+        }
+        else if (dateFrom == undefined) {
+            url = "http://localhost:8080/currencyRates?createdTo=" + dateTo + "&currency=" + tablicaCurrency[i];
+        }
+        else if (dateTo == undefined) {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom + "&currency=" + tablicaCurrency[i];
+        }
+        else {
+            url = "http://localhost:8080/currencyRates?createdFrom=" + dateFrom + "&createdTo=" + dateTo + "&currency=" + tablicaCurrency[i];
+        }
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            cache: false,
+            success: function (data) {
+
+                tablicaCurrencyQuantity[i] = data.length;
+
+                if (i == tablicaCurrency.length - 1) {
+                    showAllCurrencyChart(tablicaCurrencyQuantity);
+                }
+            }
+        });
+    }
+}
+
+//wyświetlanie wykresu
+function showAllCurrencyChart(date) {
+
+    const ctx = document.getElementById('myChart');
+    let tab = []
+    tab = date;
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['USD', 'AUD', 'CAD', 'EUR', 'HUF', 'CHF', 'GBP', 'JPY', 'CZK', 'DKK', 'NOK', 'UAH', 'CNY'],
+            datasets: [{
+                label: 'liczba kursów w bazie danych',
+                data: tab,
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}

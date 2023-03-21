@@ -15,16 +15,28 @@
 </head>
 
 <body>
-    <div class="top-bar">
-        <ul>
-            <li><a href="index.html">Strona główna</a></li>
-            <li><a href="dodawanie.html">Dodawanie ręczne</a></li>
-            <li><a href="tablica.html">Wyświetl tablicę backend</a></li>
-            <li><a href="edycja.html">Edycja tabeli</a></li>
-        </ul>
-    </div>
-    <header class="text-center">
-        <h1>Kursy walut wg Narodowego Banku Polskiego</h1>
+
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <a href="index.html">
+                <div class="top-bar-nav">Strona główna</div>
+            </a>
+            <a href="#">
+                <div class="top-bar-nav">Dodawanie ręczne</div>
+            </a>
+            <a href="tablica.html">
+                <div class="top-bar-nav">Wyświetl tablicę backend</div>
+            </a>
+            <a href="edycja.html">
+                <div class="top-bar-nav">Edycja tabeli</div>
+            </a>
+            <a href="wykresy.html">
+                <div class="top-bar-nav">Wykresy</div>
+            </a>
+        </div>
+        <div class="top-bar-right">
+            <h1>Kursy walut wg NBP</h1>
+        </div>
     </header>
     <section id="script">
         <nav>
@@ -40,7 +52,7 @@
                     <li><a class="dropdown-item" onclick="selectCurrency('CAD')">Dolar kanadyjski (CAD)</a></li>
                     <li><a class="dropdown-item" onclick="selectCurrency('EUR')">Euro (EUR)</a></li>
                     <li><a class="dropdown-item" onclick="selectCurrency('HUF')">Forint - Węgry (HUF)</a></li>
-                    <li><a class="dropdown-item" onclick="selectCurrency('HUF')">Frank szwajcarski (CHF)</a></li>
+                    <li><a class="dropdown-item" onclick="selectCurrency('CHF')">Frank szwajcarski (CHF)</a></li>
                     <li><a class="dropdown-item" onclick="selectCurrency('GBP')">Funt Szterling (GBP)</a></li>
                     <li><a class="dropdown-item" onclick="selectCurrency('JPY')">Jen - Japonia (JPY)</a></li>
                     <li><a class="dropdown-item" onclick="selectCurrency('CZK')">Korona czeska (CZK)</a></li>
